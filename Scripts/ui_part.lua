@@ -1,3 +1,5 @@
+dofile "$CONTENT_DATA/Scripts/font.lua"
+
 UiPart = class()
 
 ---@class Plane

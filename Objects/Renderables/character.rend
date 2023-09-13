@@ -1,0 +1,20 @@
+{
+   "lodList" : [
+      {
+         "includes" : [ "POSITION", "UV0" ],
+         "mesh" : "$CONTENT_DATA/Objects/Mesh/char.fbx",
+         "subMeshList" : [
+            {
+               "custom" : {
+                  "uv0" : {
+                     "u" : 0.06666666666666667,
+                     "v" : 0.058823529411764705
+                  }
+               },
+               "material" : "UVAnimDifAsg",
+               "textureList" : [ "$CONTENT_DATA/Objects/Textures/uv_map.png" ]
+            }
+         ]
+      }
+   ]
+}

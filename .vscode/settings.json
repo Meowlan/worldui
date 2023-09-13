@@ -5,4 +5,8 @@
     "Lua.workspace.library": [
         "F:\\Desktop\\​\\modding\\sm\\sm.lua"
     ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none",
 }

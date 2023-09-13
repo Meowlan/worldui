@@ -1,0 +1,19 @@
+{
+   "partList" : [
+      {
+         "box" : {
+            "x" : 1,
+            "y" : 1,
+            "z" : 1
+         },
+         "physicsMaterial" : "Default",
+         "renderable" : "$CONTENT_DATA/Objects/Renderables/character.rend",
+         "rotationSet" : "PropNegZ",
+         "scripted" : {
+            "classname" : "Test",
+            "filename" : "$CONTENT_DATA/Scripts/test.lua"
+         },
+         "uuid" : "dc1aba75-5cc9-4c8e-b80d-387046abb3c8"
+      }
+   ]
+}
