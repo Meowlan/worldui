@@ -5,7 +5,7 @@ import copy
 
 chars = u"☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■"
 
-font = ImageFont.truetype("cour.ttf", 250)
+font = ImageFont.truetype("consola.ttf", 250)
 
 maxwidth, maxheight = 0, 0
 for char in chars:
@@ -39,8 +39,9 @@ dummyshape = json.loads("""
                     "mesh": "$CONTENT_DATA/Objects/Mesh/char_solo.fbx",
                     "subMeshList": [
                         {
-                            "material": "Dif",
+                            "material": "DifAsgAlpha",
                             "textureList": [
+                                "$CONTENT_DATA/Objects/Textures/empty_dif.png",
                                 ""
                             ]
                         }
@@ -48,7 +49,7 @@ dummyshape = json.loads("""
                 }
             ]
         },
-        "rotationSet" : "PropNegZ",
+        "rotationSet" : "PropZ",
         "showInInventory" : false,
         "uuid": ""
     }
@@ -56,9 +57,10 @@ dummyshape = json.loads("""
 
 i = 0
 for char in chars:
-    uv_map = Image.new("RGB", (maxwidth, maxheight), color="white")
+    uv_map = Image.new("RGBA", (maxwidth, maxheight))
     draw = ImageDraw.Draw(uv_map)
-    draw.text((0, 0), char, fill="black", font=font)
+        
+    draw.text((0, 0), char, fill="#ff00a0ff", font=font)
     sexyuuid = uuid.uuid5(namespace, char)
     csv_string = csv_string + f"{sexyuuid}, {char}\n"
     i = i + 1
@@ -67,7 +69,7 @@ for char in chars:
     shape = copy.deepcopy(dummyshape)
     shape["name"] = f"Character {char.encode()}"
     shape["uuid"] = str(sexyuuid)
-    shape["renderable"]["lodList"][0]["subMeshList"][0]["textureList"][0] = f"$CONTENT_DATA/Objects/Textures/Characters/{str(sexyuuid)}.png"
+    shape["renderable"]["lodList"][0]["subMeshList"][0]["textureList"][1] = f"$CONTENT_DATA/Objects/Textures/Characters/{str(sexyuuid)}.png"
     
     shapeset["partList"].append(shape)
     

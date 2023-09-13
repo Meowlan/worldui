@@ -1,4 +1,6 @@
-Uuid2char = {
+Font = class()
+
+Font.Uuid2char = {
     ["db4d9512-f41d-5d7b-be1e-97c502f4ee21"] = "☺",
     ["17b05e94-1e8a-5d3c-9e65-53f85ba35e79"] = "☻",
     ["28c88f23-457c-5ca7-a2e9-2511374f85e1"] = "♥",
@@ -255,19 +257,25 @@ Uuid2char = {
     ["4a2b813f-5792-50b7-b18f-aaa471dbb9bf"] = "■"
 }
 
-Char2uuid = {}
-Char2id = {}
-Id2char = {}
-Id2uuid = {}
-Uuid2id = {}
+function Font:init()
+    local font = {}
+    font.Char2uuid = {}
+    font.Char2id = {}
+    font.Id2char = {}
+    font.Id2uuid = {}
+    font.Uuid2id = {}
+    font.Uuid2char = Font.Uuid2char
 
-local id = 1
-for uuid, char in ipairs(Uuid2char) do
-    Char2uuid[char] = uuid
-    Char2id[char] = id
-    Id2char[id] = char
-    Id2uuid[id] = uuid
-    Uuid2id[uuid] = id
+    local id = 1
+    for uuid, char in pairs(font.Uuid2char) do
+        font.Char2uuid[char] = uuid
+        font.Char2id[char] = id
+        font.Id2char[id] = char
+        font.Id2uuid[id] = uuid
+        font.Uuid2id[uuid] = id
 
-    id = id + 1
+        id = id + 1
+    end
+
+    return font
 end

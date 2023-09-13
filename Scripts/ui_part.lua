@@ -1,5 +1,12 @@
 dofile "$CONTENT_DATA/Scripts/font.lua"
 
+---@class UiPart
+---@field interactable Interactable The [Interactable] game object belonging to this class instance. (The same as shape.interactable)
+---@field shape Shape The [Shape] game object that the [Interactable] is attached to. (The same as interactable.shape)
+---@field network Network A [Network] object that can be used to send messages between client and server.
+---@field storage Storage (Server side only.) A [Storage] object that can be used to store data for the next time loading this object after being unloaded.
+---@field data any Data from the "data" json element.
+---@field params any Parameter set with [Interactable.setParams] when created from a script.
 UiPart = class()
 
 ---@class Plane
@@ -147,6 +154,50 @@ function UiPart.Panel:panelIntersection(panel, origin, direction, range)
     return success, result
 end
 
+---@class Text
+UiPart.Text = class()
+function UiPart.Text:newText(text, position, size, rotation, host, wrap)
+    self.Font = Font:init()
+    local ratio = 0.5352112676056338 -- the ratio between width and height, devide the height by this to get the offset
+
+    local cursor = 0
+    local line = 0
+
+    local effects = {}
+
+    for uchar in string.gmatch(text, "([%z\1-\127\194-\244][\128-\191]*)") do
+        local uuid = self.Font.Char2uuid[uchar]
+        if not uuid then print(string.format("FUCK␇ character %s not available", uchar)) return end
+
+        local charPos = position + (rotation * sm.vec3.new(cursor*0.25, 0, 0))
+        local charSize = sm.vec3.one()*0.25
+
+        local effect = self:newChar(uuid, charPos, charSize, rotation, host)
+        table.insert(effects, effect)
+        cursor = cursor + 1
+    end
+
+    return effects
+end
+
+function UiPart.Text:newChar(uuid, position, size, rotation, host)
+    local effect = sm.effect.createEffect("ShapeRenderable", host)
+    
+    if host then
+        effect:setOffsetPosition(position)
+        effect:setOffsetRotation(rotation)
+    else
+        effect:setPosition(position)
+        effect:setRotation(rotation)
+    end
+
+    effect:setScale(size)
+    effect:setParameter("uuid", sm.uuid.new(uuid))
+    effect:start()
+
+    return effect
+end
+
 local function keys(table)
     local keyset={}
     local n=0
@@ -167,6 +218,9 @@ function UiPart:client_onCreate()
     self.panels.frame.localTo = self.interactable
     self.panels.frame.position = sm.vec3.new(0, 1, 0)
     UiPart.Panel:panelCreateEffect(self.panels.frame)
+
+    self.panels.text1 = {}
+    self.panels.text1.effects = self.Text:newText("Working pretty lovely eh?", sm.vec3.new(0, 1, 0), sm.vec3.one() * 0.25, sm.quat.identity(), self.interactable, true)
 end
 
 function UiPart:client_onDestroy()
