@@ -60,7 +60,7 @@ for char in chars:
     uv_map = Image.new("RGBA", (maxwidth, maxheight))
     draw = ImageDraw.Draw(uv_map)
         
-    draw.text((0, 0), char, fill="#ff00a0ff", font=font)
+    draw.text((0, 0), char, fill="#ff00a000", font=font)
     sexyuuid = uuid.uuid5(namespace, char)
     csv_string = csv_string + f"{sexyuuid}, {char}\n"
     i = i + 1
