@@ -9,28 +9,12 @@
          "name" : "ui_part",
          "physicsMaterial" : "Default",
          "renderable" : "$GAME_DATA/Objects/Renderable/Interactive/obj_interactive_logicgate.rend",
-         "rotationSet" : "PropAll",
+         "rotationSet" : "PropYZ",
          "scripted" : {
             "classname" : "UiPart",
             "filename" : "$CONTENT_DATA/Scripts/ui_part.lua"
          },
          "uuid" : "845a5e47-6ee1-49a6-8f16-3cb9db5eb540"
-      },
-      {
-         "box" : {
-            "x" : 1,
-            "y" : 1,
-            "z" : 1
-         },
-         "name" : "test",
-         "physicsMaterial" : "Default",
-         "renderable" : "$GAME_DATA/Objects/Renderable/Interactive/obj_interactive_logicgate.rend",
-         "rotationSet" : "PropAll",
-         "scripted" : {
-            "classname" : "Test",
-            "filename" : "$CONTENT_DATA/Scripts/test.lua"
-         },
-         "uuid" : "f6c571cb-fc3e-459b-b569-f2b3006df331"
       }
    ]
 }

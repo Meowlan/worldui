@@ -3,9 +3,9 @@ import uuid
 import json
 import copy
 
-chars = u"☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■"
+chars = u"☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼ !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▉▊▋▍▎▏▌▄▐▀αßΓπΣσµτΦΘΩδ∞φε∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■"
 
-font = ImageFont.truetype("consola.ttf", 250)
+font = ImageFont.truetype("IBMPlexMono-Regular.ttf", 250)
 
 maxwidth, maxheight = 0, 0
 for char in chars:
@@ -56,13 +56,15 @@ dummyshape = json.loads("""
 """)
 
 i = 0
+uuids_lua = ""
 for char in chars:
     uv_map = Image.new("RGBA", (maxwidth, maxheight))
     draw = ImageDraw.Draw(uv_map)
         
-    draw.text((0, 0), char, fill="#ff00a000", font=font)
+    draw.text((0, 0), char, fill="#ff00a0ff", font=font)
     sexyuuid = uuid.uuid5(namespace, char)
     csv_string = csv_string + f"{sexyuuid}, {char}\n"
+    uuids_lua = uuids_lua + f"[\"{sexyuuid}\"] = \"{char}\",\n"
     i = i + 1
     uv_map.save(f"texture/{sexyuuid}.png")
     
@@ -78,3 +80,6 @@ with open("characters.shapeset", "w") as outfile:
 
 with open("uuids.csv", "w", encoding="utf-8") as outfile  :
     outfile.write(csv_string)
+    
+with open("uuids.lua", "w", encoding="utf-8") as outfile  :
+    outfile.write(uuids_lua)

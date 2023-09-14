@@ -70,9 +70,9 @@ function UiPart.Panel:newUiPanel()
 	newUiPanel.position = sm.vec3.zero()
 	newUiPanel.size = sm.vec3.new(1, 1, 0.00001)
 	newUiPanel.rotation = sm.quat.identity()
-	newUiPanel.color = sm.color.new(0x00000000)
-	newUiPanel.shapeUuid = sm.uuid.new("628b2d61-5ceb-43e9-8334-a4135566df7a")
-	newUiPanel.visualziation = true
+	newUiPanel.color = sm.color.new(0xffffffff)
+	newUiPanel.shapeUuid = sm.uuid.new("5f41af56-df4c-4837-9b3c-10781335757f")
+	newUiPanel.visualziation = false
 	newUiPanel.localTo = nil
 	return newUiPanel
 end
@@ -140,13 +140,13 @@ function UiPart.Panel:panelIntersection(panel, origin, direction, range)
 	range = range or 7.5
 	local Ray = UiPart.Ray:new(origin, direction)
 	local rot = UiPart.Panel:panelGetWorlRot(panel)
-	local Plane = UiPart.Plane:new(UiPart.Panel:panelGetWorlPos(panel), sm.quat.getUp(rot), sm.quat.getRight(rot))
+	local Plane = UiPart.Plane:new(UiPart.Panel:panelGetWorlPos(panel), sm.quat.getRight(rot), sm.quat.getUp(rot))
 
 	local success, result = UiPart.Plane:planeIntersection(Ray, Plane)
 	if not success then return false, nil end
 	if result.distance > range then return false, nil end
-	if result.pointLocal.x > 0.5 or result.pointLocal.x < -0.5 then return false, nil end
-	if result.pointLocal.y > 0.5 or result.pointLocal.y < -0.5 then return false, nil end
+	if result.pointLocal.x > panel.size.x / 2 or result.pointLocal.x < -panel.size.x / 2 then return false, nil end
+	if result.pointLocal.y > panel.size.y / 2 or result.pointLocal.y < -panel.size.y / 2 then return false, nil end
 
 	local succesR, resultR = sm.localPlayer.getRaycast(result.distance)
 	if succesR then return false, nil end
@@ -156,14 +156,14 @@ end
 
 ---@class Text
 UiPart.Text = class()
-function UiPart.Text:newText(text, font_size, layer, position, size, rotation, host, wrap, color, padding)
+function UiPart.Text:newText(text, font_size, layer, position, size, rotation, host, wrap, color)
 	self.Font = Font:init()
 	local ratio = 0.5352112676056338 -- the ratio between width and height, devide the height by this to get the offset
 	local charx = font_size
 	local chary = font_size / ratio
 
-	local maxperline = ((size.x - padding / 2) * 4) / font_size
-	local maxperliney = ((size.y - padding / 2) * 4) / (font_size / ratio) - 1
+	local maxperline = (size.x * 4) / font_size
+	local maxperliney = (size.y * 4) / (font_size / ratio) - 1
 	local cursor = 0
 	local charIndex = 0
 	local line = 0
@@ -217,7 +217,7 @@ function UiPart.Text:newText(text, font_size, layer, position, size, rotation, h
 		::checksDone::
 
 		if cursor >= maxperline then
-			cursor = math.floor(cursor % maxperline) - 1
+			cursor = cursor % maxperline
 			line = line + 1
 		end
 
@@ -228,7 +228,7 @@ function UiPart.Text:newText(text, font_size, layer, position, size, rotation, h
 		local x = cursor * font_size + charx / 2
 		local y = -line * font_size / ratio - chary / 2
 
-		local charPos = position + (rotation * sm.vec3.new(x + padding, y - padding, layer)) * 0.25
+		local charPos = position + (rotation * sm.vec3.new(x, y, layer)) * 0.25
 		local charSize = sm.vec3.one() * font_size
 
 		local effect = self:newChar(uuid, charPos, charSize * 0.25, rotation, host, color)
@@ -275,18 +275,28 @@ function UiPart:client_onCreate()
 	self.actionsKeys = keys(sm.interactable.actions)
 
 	for _, effect in ipairs(self.effects or {}) do
-		effect:destroy()
+		if sm.exists(effect) then
+			effect:destroy()
+		end
 	end
 
 	self.effects = {}
 	self.panels = {}
+
 	self.panels.frame = UiPart.Panel:newUiPanel()
 	self.panels.frame.localTo = self.interactable
 	self.panels.frame.size = sm.vec3.new(2, 2, 0.00001)
-	self.panels.frame.position = sm.vec3.new(0, 1, 0)
+	self.panels.frame.position = sm.vec3.new(0, 1 + 0.125, 0)
 	UiPart.Panel:panelCreateEffect(self.panels.frame)
 
-	local text = [[
+	self.panels.button = UiPart.Panel:newUiPanel()
+	self.panels.button.localTo = self.interactable
+	self.panels.button.size = sm.vec3.new(1, 0.5, 0.00001)
+	self.panels.button.position = sm.vec3.new(0, 0.5 + 0.125, 0)
+	self.panels.button.visualziation = true
+	UiPart.Panel:panelCreateEffect(self.panels.button)
+
+	self. text = [[
 hello world,
 this is an epic newline test!
 
@@ -294,17 +304,19 @@ oh and this line has an indent wrapped    over
 
 eh whaterver who cares anyways
 #0000fftime to parse some #00ff00color
-#ffffffEpic progress bar: 25%
-#ff00ff█████#aa00ff▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#ffffffEpic progress bar:
+%s #ffffff[%0.2f%%]
+
+#ff00ffxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ]]
 
 	self.panels.text1 = {}
-	self.panels.text1.effects = self.Text:newText(text, 0.2, 0.005, sm.vec3.new(-1, 2, 0), sm.vec3.one()*2, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff), 0.25)
+	self.panels.text1.effects = self.Text:newText(self. text, 0.2, 0.005, sm.vec3.new(-1, 2 + 0.125, 0), sm.vec3.one()*2, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff), 0.25)
 	for _, effect in ipairs(self.panels.text1.effects) do
 		table.insert(self.effects, effect)
 	end
+	self.time = 0
 end
 
 function UiPart:client_onDestroy()
@@ -320,9 +332,70 @@ function UiPart:client_onRefresh()
 	self:client_onCreate()
 end
 
-function UiPart:client_onFixedUpdate()
+local function colorLerp(colora, colorb, t)
+	return sm.color.new(
+		sm.util.lerp( colora.r, colorb.r, t ),
+		sm.util.lerp( colora.g, colorb.g, t ),
+		sm.util.lerp( colora.b, colorb.b, t )
+	)
+end
+
+local function getHexAtP(p)
+	local color = colorLerp(sm.color.new(0xff0000ff), sm.color.new(0x0000ffff), p)
+	return "#"..color:getHexStr():sub(1, -3)
+end
+
+local function createProgressBar(p, width)
+	local color = getHexAtP(p)
+    local progressBar = "["
+    local characters = {" ", "▏", "▎", "▍", "▌", "▋", "▊", "▉", "█"}
+    local numCharacters = #characters
+    local numBars = math.floor(p * width)
+    local remainder = (p * width - numBars) * numCharacters
+
+    for i = 1, numBars do
+        progressBar = progressBar .. getHexAtP(i/width) .. "█"
+    end
+
+    if numBars < width then
+        progressBar = progressBar .. color .. characters[math.floor(remainder) + 1]
+    end
+
+    for i = numBars + 1, width - 1 do
+        progressBar = progressBar .. " "
+    end
+
+    return progressBar .. "#ffffff]"
+end
+
+function UiPart:client_onFixedUpdate(dt)
 	local success, result = UiPart.Panel:panelIntersection(self.panels.frame, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
-	if not success then return end
+	--if not success or true then return end
+
+	local a = self.time % 10 -- time
+	local p = a / 10 -- percentage
+	p = sm.util.easing("easeInOutQuint", p)
+
+	local width = 20 -- Width of the progress bar
+
+	
+
+	local progressBar = createProgressBar(p, width)
+	local newtext = string.format(self.text, progressBar, p*100)
+
+	self.time = self.time + dt
+	if (self._text or "") ~= newtext then
+		self._text = newtext
+
+		for _, effect in ipairs(self.panels.text1.effects or {}) do
+			if sm.exists(effect) then
+				effect:destroy()
+			end
+		end
+
+		self.panels.text1.effects = self.Text:newText(self._text, 0.2, 0.005, sm.vec3.new(-1, 2 + 0.125, 0), sm.vec3.one()*2, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff))
+	end
+
 	--sm.particle.createParticle("paint_smoke", result.pointWorld, nil, sm.color.new(0xff00ffff))
 end
 
@@ -339,6 +412,13 @@ function UiPart:server_onDestroy()
 end
 
 function UiPart:client_onAction( action, state )
+	if action == sm.interactable.actions.create and state then
+		local success, result = UiPart.Panel:panelIntersection(self.panels.button, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
+		if success then
+			print(sm.gui.chatMessage(string.format("bruh quit pressing on me!! (%0.2f, %0.2f)", result.pointLocal.x, result.pointLocal.y)))
+		end
+	end
+
 	print(string.format("%s%s", self.actionsKeys[action], state and "_on" or "_off"))
 	return false
 end

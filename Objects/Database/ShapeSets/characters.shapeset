@@ -6148,6 +6148,174 @@
                                 "material": "DifAsgAlpha",
                                 "textureList": [
                                     "$CONTENT_DATA/Objects/Textures/empty_dif.png",
+                                    "$CONTENT_DATA/Objects/Textures/Characters/229f8b44-7cf2-5260-bb06-5c81bbdb3d0f.png"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "rotationSet": "PropZ",
+            "showInInventory": false,
+            "uuid": "229f8b44-7cf2-5260-bb06-5c81bbdb3d0f",
+            "name": "Character b'\\xe2\\x96\\x89'"
+        },
+        {
+            "physicsMaterial": "Default",
+            "box": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "renderable": {
+                "lodList": [
+                    {
+                        "mesh": "$CONTENT_DATA/Objects/Mesh/char_solo.fbx",
+                        "subMeshList": [
+                            {
+                                "material": "DifAsgAlpha",
+                                "textureList": [
+                                    "$CONTENT_DATA/Objects/Textures/empty_dif.png",
+                                    "$CONTENT_DATA/Objects/Textures/Characters/5887f00b-3d24-53d1-845d-354185b8c339.png"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "rotationSet": "PropZ",
+            "showInInventory": false,
+            "uuid": "5887f00b-3d24-53d1-845d-354185b8c339",
+            "name": "Character b'\\xe2\\x96\\x8a'"
+        },
+        {
+            "physicsMaterial": "Default",
+            "box": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "renderable": {
+                "lodList": [
+                    {
+                        "mesh": "$CONTENT_DATA/Objects/Mesh/char_solo.fbx",
+                        "subMeshList": [
+                            {
+                                "material": "DifAsgAlpha",
+                                "textureList": [
+                                    "$CONTENT_DATA/Objects/Textures/empty_dif.png",
+                                    "$CONTENT_DATA/Objects/Textures/Characters/f41c572a-f877-588d-a58e-8b9c32c393fb.png"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "rotationSet": "PropZ",
+            "showInInventory": false,
+            "uuid": "f41c572a-f877-588d-a58e-8b9c32c393fb",
+            "name": "Character b'\\xe2\\x96\\x8b'"
+        },
+        {
+            "physicsMaterial": "Default",
+            "box": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "renderable": {
+                "lodList": [
+                    {
+                        "mesh": "$CONTENT_DATA/Objects/Mesh/char_solo.fbx",
+                        "subMeshList": [
+                            {
+                                "material": "DifAsgAlpha",
+                                "textureList": [
+                                    "$CONTENT_DATA/Objects/Textures/empty_dif.png",
+                                    "$CONTENT_DATA/Objects/Textures/Characters/f2b13f9d-9a5f-5a78-85ea-af269d43f5c5.png"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "rotationSet": "PropZ",
+            "showInInventory": false,
+            "uuid": "f2b13f9d-9a5f-5a78-85ea-af269d43f5c5",
+            "name": "Character b'\\xe2\\x96\\x8d'"
+        },
+        {
+            "physicsMaterial": "Default",
+            "box": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "renderable": {
+                "lodList": [
+                    {
+                        "mesh": "$CONTENT_DATA/Objects/Mesh/char_solo.fbx",
+                        "subMeshList": [
+                            {
+                                "material": "DifAsgAlpha",
+                                "textureList": [
+                                    "$CONTENT_DATA/Objects/Textures/empty_dif.png",
+                                    "$CONTENT_DATA/Objects/Textures/Characters/347f3bd0-539f-5d16-90f4-1b5b4d887f18.png"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "rotationSet": "PropZ",
+            "showInInventory": false,
+            "uuid": "347f3bd0-539f-5d16-90f4-1b5b4d887f18",
+            "name": "Character b'\\xe2\\x96\\x8e'"
+        },
+        {
+            "physicsMaterial": "Default",
+            "box": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "renderable": {
+                "lodList": [
+                    {
+                        "mesh": "$CONTENT_DATA/Objects/Mesh/char_solo.fbx",
+                        "subMeshList": [
+                            {
+                                "material": "DifAsgAlpha",
+                                "textureList": [
+                                    "$CONTENT_DATA/Objects/Textures/empty_dif.png",
+                                    "$CONTENT_DATA/Objects/Textures/Characters/8a66a8d8-2993-5891-8357-12e242a1776c.png"
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "rotationSet": "PropZ",
+            "showInInventory": false,
+            "uuid": "8a66a8d8-2993-5891-8357-12e242a1776c",
+            "name": "Character b'\\xe2\\x96\\x8f'"
+        },
+        {
+            "physicsMaterial": "Default",
+            "box": {
+                "x": 1,
+                "y": 1,
+                "z": 1
+            },
+            "renderable": {
+                "lodList": [
+                    {
+                        "mesh": "$CONTENT_DATA/Objects/Mesh/char_solo.fbx",
+                        "subMeshList": [
+                            {
+                                "material": "DifAsgAlpha",
+                                "textureList": [
+                                    "$CONTENT_DATA/Objects/Textures/empty_dif.png",
                                     "$CONTENT_DATA/Objects/Textures/Characters/35dc2988-0d06-54da-831e-9d1a4ff13688.png"
                                 ]
                             }
