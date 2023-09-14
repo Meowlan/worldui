@@ -1,0 +1,16 @@
+{
+   "lodList" : [
+      {
+         "mesh" : "$CONTENT_DATA/Objects/Mesh/rounded_rect.fbx",
+         "subMeshList" : [
+            {
+               "material" : "DifAsgAlphaFlip",
+               "textureList" : [
+                  "$CONTENT_DATA/Objects/Textures/empty_dif.png",
+                  "$CONTENT_DATA/Objects/Textures/pink_asg.png"
+               ]
+            }
+         ]
+      }
+   ]
+}

@@ -272,6 +272,7 @@ end
 
 function UiPart:client_onCreate()
 	self.maxDistance = 7.5
+	self.locked = false
 	self.actionsKeys = keys(sm.interactable.actions)
 
 	for _, effect in ipairs(self.effects or {}) do
@@ -291,12 +292,20 @@ function UiPart:client_onCreate()
 
 	self.panels.button = UiPart.Panel:newUiPanel()
 	self.panels.button.localTo = self.interactable
-	self.panels.button.size = sm.vec3.new(1, 0.5, 0.00001)
-	self.panels.button.position = sm.vec3.new(0, 0.5 + 0.125, 0)
-	self.panels.button.visualziation = true
+	self.panels.button.size = sm.vec3.new(0.5, 0.5, 0.00001)
+	self.panels.button.position = sm.vec3.new(0, 0.5 + 0.125, 0.005)
+	self.panels.button.color = sm.color.new(0x00afffff)
+	self.panels.button.shapeUuid = sm.uuid.new("0cf010e1-50c5-4c98-b56b-e3c6e8c9d3b9")
 	UiPart.Panel:panelCreateEffect(self.panels.button)
 
-	self. text = [[
+	local text = "im an epic button with text on it"
+	self.panels.text2 = {}
+	self.panels.text2.effects = self.Text:newText(text, 0.2, 0.005, self.panels.button.position - sm.vec3.new(0.25, -0.25, 0), self.panels.button.size, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff))
+	for _, effect in ipairs(self.panels.text2.effects) do
+		table.insert(self.effects, effect)
+	end
+
+	self.text = [[
 hello world,
 this is an epic newline test!
 
@@ -312,7 +321,7 @@ eh whaterver who cares anyways
 ]]
 
 	self.panels.text1 = {}
-	self.panels.text1.effects = self.Text:newText(self. text, 0.2, 0.005, sm.vec3.new(-1, 2 + 0.125, 0), sm.vec3.one()*2, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff), 0.25)
+	self.panels.text1.effects = self.Text:newText(self.text, 0.2, 0.005, sm.vec3.new(-1, 2 + 0.125, 0), sm.vec3.one()*2, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff))
 	for _, effect in ipairs(self.panels.text1.effects) do
 		table.insert(self.effects, effect)
 	end
@@ -368,8 +377,25 @@ local function createProgressBar(p, width)
     return progressBar .. "#ffffff]"
 end
 
+function UiPart:lock(_, player)
+	player.character:setLockingInteractable(self.interactable)
+end
+
+function UiPart:unlock(_, player)
+	player.character:setLockingInteractable( nil )
+end
+
 function UiPart:client_onFixedUpdate(dt)
 	local success, result = UiPart.Panel:panelIntersection(self.panels.frame, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
+
+	if success and not self.locked then
+		self.network:sendToServer("lock")
+		self.locked = true
+	elseif not success and self.locked then
+		self.network:sendToServer("unlock")
+		self.locked = false
+	end
+
 	--if not success or true then return end
 
 	local a = self.time % 10 -- time
@@ -377,8 +403,6 @@ function UiPart:client_onFixedUpdate(dt)
 	p = sm.util.easing("easeInOutQuint", p)
 
 	local width = 20 -- Width of the progress bar
-
-	
 
 	local progressBar = createProgressBar(p, width)
 	local newtext = string.format(self.text, progressBar, p*100)
@@ -397,18 +421,6 @@ function UiPart:client_onFixedUpdate(dt)
 	end
 
 	--sm.particle.createParticle("paint_smoke", result.pointWorld, nil, sm.color.new(0xff00ffff))
-end
-
-function UiPart:server_onCreate()
-	for _, player in ipairs(sm.player.getAllPlayers()) do
-		player.character:setLockingInteractable( self.interactable )
-	end
-end
-
-function UiPart:server_onDestroy()
-	for _, player in ipairs(sm.player.getAllPlayers()) do
-		player.character:setLockingInteractable( nil )
-	end
 end
 
 function UiPart:client_onAction( action, state )

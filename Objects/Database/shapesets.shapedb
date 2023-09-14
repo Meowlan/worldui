@@ -1,6 +1,7 @@
 {
    "shapeSetList" : [ 
       "$CONTENT_DATA/Objects/Database/ShapeSets/ui_part.shapeset",
+      "$CONTENT_DATA/Objects/Database/ShapeSets/ui_components.shapeset",
       "$CONTENT_DATA/Objects/Database/ShapeSets/characters.shapeset"
    ]
 }
