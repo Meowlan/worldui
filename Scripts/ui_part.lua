@@ -1,5 +1,7 @@
 dofile "$CONTENT_DATA/Scripts/font.lua"
 
+-- TODO: actually make this stuff a library and move all the ui library stuff out into a seperate file
+
 ---@class UiPart
 ---@field interactable Interactable The [Interactable] game object belonging to this class instance. (The same as shape.interactable)
 ---@field shape Shape The [Shape] game object that the [Interactable] is attached to. (The same as interactable.shape)
@@ -157,6 +159,9 @@ end
 ---@class Text
 UiPart.Text = class()
 function UiPart.Text:newText(text, font_size, layer, position, size, rotation, host, wrap, color)
+
+	-- TODO: a full rewrite of this function, espacially the text parsing could be made a lot faster and cleaner
+
 	self.Font = Font:init()
 	local ratio = 0.5352112676056338 -- the ratio between width and height, devide the height by this to get the offset
 	local charx = font_size
@@ -284,6 +289,10 @@ function UiPart:client_onCreate()
 	self.effects = {}
 	self.panels = {}
 
+	--TODO: i dont really like the way you position  and scale the panels at the moment, 
+	-- the size isnt really related to the position, and the panels star from the center 
+	-- while text starts from the top left corner
+
 	self.panels.frame = UiPart.Panel:newUiPanel()
 	self.panels.frame.localTo = self.interactable
 	self.panels.frame.size = sm.vec3.new(2, 2, 0.00001)
@@ -300,6 +309,13 @@ function UiPart:client_onCreate()
 
 	local text = "im an epic button with text on it"
 	self.panels.text2 = {}
+
+	-- TODO: rework the text constructor to make it simiar to the ui panel stuff, 
+	-- First you initialize the data structure, do your modifications to it like 
+	-- changing the size and position, And then you create the effects.
+	-- then in order to modify the text you just call something like 
+	-- self.Text:setText(self.panels.text1, "sex")
+
 	self.panels.text2.effects = self.Text:newText(text, 0.2, 0.005, self.panels.button.position - sm.vec3.new(0.25, -0.25, 0), self.panels.button.size, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff))
 	for _, effect in ipairs(self.panels.text2.effects) do
 		table.insert(self.effects, effect)
@@ -411,6 +427,8 @@ function UiPart:client_onFixedUpdate(dt)
 	if (self._text or "") ~= newtext then
 		self._text = newtext
 
+		--TODO: Make a proper effect managar, and make an text update function that only deletes/recreates effects that have been changed 
+
 		for _, effect in ipairs(self.panels.text1.effects or {}) do
 			if sm.exists(effect) then
 				effect:destroy()
@@ -425,6 +443,7 @@ end
 
 function UiPart:client_onAction( action, state )
 	if action == sm.interactable.actions.create and state then
+		-- TODO: a proper button manager
 		local success, result = UiPart.Panel:panelIntersection(self.panels.button, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
 		if success then
 			print(sm.gui.chatMessage(string.format("bruh quit pressing on me!! (%0.2f, %0.2f)", result.pointLocal.x, result.pointLocal.y)))
