@@ -443,7 +443,9 @@ end
 
 function UiPart:client_onAction( action, state )
 	if action == sm.interactable.actions.create and state then
-		-- TODO: a proper button manager
+		-- TODO: a proper button manager. preferably using callbacks if possiblle.
+		-- Add a new ui class for button, wich you can give a call back at creation
+		-- and then the user just has to call a function inside their client_onAtion like self.Buttons:probe( action, state )
 		local success, result = UiPart.Panel:panelIntersection(self.panels.button, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
 		if success then
 			print(sm.gui.chatMessage(string.format("bruh quit pressing on me!! (%0.2f, %0.2f)", result.pointLocal.x, result.pointLocal.y)))
