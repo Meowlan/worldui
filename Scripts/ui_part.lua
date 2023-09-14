@@ -70,7 +70,7 @@ function UiPart.Panel:newUiPanel()
 	newUiPanel.position = sm.vec3.zero()
 	newUiPanel.size = sm.vec3.new(1, 1, 0.00001)
 	newUiPanel.rotation = sm.quat.identity()
-	newUiPanel.color = sm.color.new(0xffffffff)
+	newUiPanel.color = sm.color.new(0x00000000)
 	newUiPanel.shapeUuid = sm.uuid.new("628b2d61-5ceb-43e9-8334-a4135566df7a")
 	newUiPanel.visualziation = true
 	newUiPanel.localTo = nil
@@ -157,16 +157,13 @@ end
 ---@class Text
 UiPart.Text = class()
 function UiPart.Text:newText(text, font_size, layer, position, size, rotation, host, wrap, color, padding)
-	local font_size = font_size / 50
-	local padding = padding / 400
-
 	self.Font = Font:init()
 	local ratio = 0.5352112676056338 -- the ratio between width and height, devide the height by this to get the offset
-	local charx = 1 * 0.25 * font_size
-	local chary = (1 / ratio) * 0.25 * font_size
+	local charx = font_size
+	local chary = font_size / ratio
 
-	local maxperline = size.x / charx
-
+	local maxperline = ((size.x - padding / 2) * 4) / font_size
+	local maxperliney = ((size.y - padding / 2) * 4) / (font_size / ratio) - 1
 	local cursor = 0
 	local charIndex = 0
 	local line = 0
@@ -214,27 +211,27 @@ function UiPart.Text:newText(text, font_size, layer, position, size, rotation, h
 			skip = 6
 			goto continue
 		elseif not uuid then 
-			print(string.format("FUCK␇ character %s not available", uchar)) 
+			print(string.format("FUCK␇ character %s not available", uchar))
 			goto continue
 		end
 		::checksDone::
 
-		if cursor * 0.25 * font_size + charx / 2 > size.x - padding then
-			cursor = cursor % maxperline
+		if cursor >= maxperline then
+			cursor = math.floor(cursor % maxperline) - 1
 			line = line + 1
 		end
 
-		if line * 0.25 * font_size / ratio > size.y - chary - padding then
+		if line > maxperliney then
 			break
 		end
 
-		local x = cursor * 0.25 * font_size + charx / 2 + padding
-		local y = -line * 0.25 * font_size / ratio - chary / 2 - padding
+		local x = cursor * font_size + charx / 2
+		local y = -line * font_size / ratio - chary / 2
 
-		local charPos = position + (rotation * sm.vec3.new(x, y, layer))
-		local charSize = sm.vec3.one() * 0.25 * font_size
+		local charPos = position + (rotation * sm.vec3.new(x + padding, y - padding, layer)) * 0.25
+		local charSize = sm.vec3.one() * font_size
 
-		local effect = self:newChar(uuid, charPos, charSize, rotation, host, color)
+		local effect = self:newChar(uuid, charPos, charSize * 0.25, rotation, host, color)
 		table.insert(effects, effect)
 		cursor = cursor + 1
 		::continue::
@@ -292,15 +289,19 @@ function UiPart:client_onCreate()
 	local text = [[
 hello world,
 this is an epic newline test!
-oh and this line has an indent wrapped	 over
+
+oh and this line has an indent wrapped    over
+
 eh whaterver who cares anyways
 #0000fftime to parse some #00ff00color
 #ffffffEpic progress bar: 25%
 #ff00ff█████#aa00ff▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ]]
 
 	self.panels.text1 = {}
-	self.panels.text1.effects = self.Text:newText(text, 10, 0.005, sm.vec3.new(-1, 2, 0), sm.vec3.one()*2, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff), 5)
+	self.panels.text1.effects = self.Text:newText(text, 0.2, 0.005, sm.vec3.new(-1, 2, 0), sm.vec3.one()*2, sm.quat.identity(), self.interactable, true, sm.color.new(0xffffffff), 0.25)
 	for _, effect in ipairs(self.panels.text1.effects) do
 		table.insert(self.effects, effect)
 	end
