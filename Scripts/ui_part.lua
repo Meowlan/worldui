@@ -393,11 +393,11 @@ local function createProgressBar(p, width)
     return progressBar .. "#ffffff]"
 end
 
-function UiPart:lock(_, player)
+function UiPart:lock(player)
 	player.character:setLockingInteractable(self.interactable)
 end
 
-function UiPart:unlock(_, player)
+function UiPart:unlock(player)
 	player.character:setLockingInteractable( nil )
 end
 
@@ -405,10 +405,12 @@ function UiPart:client_onFixedUpdate(dt)
 	local success, result = UiPart.Panel:panelIntersection(self.panels.frame, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
 
 	if success and not self.locked and not sm.localPlayer.getPlayer().character:getLockingInteractable() then
-		self.network:sendToServer("lock")
+		sm.event.sendToInteractable(self.interactable, "lock", sm.localPlayer.getPlayer())
+		--self.network:sendToServer("lock")
 		self.locked = true
 	elseif not success and self.locked then
-		self.network:sendToServer("unlock")
+		sm.event.sendToInteractable(self.interactable, "unlock", sm.localPlayer.getPlayer())
+		--self.network:sendToServer("unlock")
 		self.locked = false
 	end
 
