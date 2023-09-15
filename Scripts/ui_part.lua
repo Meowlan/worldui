@@ -404,7 +404,7 @@ end
 function UiPart:client_onFixedUpdate(dt)
 	local success, result = UiPart.Panel:panelIntersection(self.panels.frame, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
 
-	if success and not self.locked then
+	if success and not self.locked and not sm.localPlayer.getPlayer().character:getLockingInteractable() then
 		self.network:sendToServer("lock")
 		self.locked = true
 	elseif not success and self.locked then
@@ -446,10 +446,15 @@ function UiPart:client_onAction( action, state )
 		-- TODO: a proper button manager. preferably using callbacks if possiblle.
 		-- Add a new ui class for button, wich you can give a call back at creation
 		-- and then the user just has to call a function inside their client_onAtion like self.Buttons:probe( action, state )
-		local success, result = UiPart.Panel:panelIntersection(self.panels.button, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
-		if success then
-			print(sm.gui.chatMessage(string.format("bruh quit pressing on me!! (%0.2f, %0.2f)", result.pointLocal.x, result.pointLocal.y)))
+		local success, _ = UiPart.Panel:panelIntersection(self.panels.frame, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
+		if not success then return false end
+
+		local buttonsuccess, buttonresult = UiPart.Panel:panelIntersection(self.panels.button, sm.localPlayer.getRaycastStart(), sm.localPlayer.getDirection(), self.maxDistance)
+		if buttonsuccess then
+			print(sm.gui.chatMessage(string.format("bruh quit pressing on me!! (%0.2f, %0.2f)", buttonresult.pointLocal.x, buttonresult.pointLocal.y)))
 		end
+
+		return success
 	end
 
 	print(string.format("%s%s", self.actionsKeys[action], state and "_on" or "_off"))
