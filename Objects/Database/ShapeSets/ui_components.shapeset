@@ -10,7 +10,8 @@
          "physicsMaterial" : "Default",
          "renderable" : "$CONTENT_DATA/Objects/Renderables/rounded_rect.rend",
          "rotationSet" : "PropYZ",
-         "uuid" : "0cf010e1-50c5-4c98-b56b-e3c6e8c9d3b9"
+         "uuid" : "0cf010e1-50c5-4c98-b56b-e3c6e8c9d3b9",
+         "showInInventory" : false
       }
    ]
 }
