@@ -1,3 +1,4 @@
+---@class Font
 Font = class()
 
 Font.Uuid2char = {

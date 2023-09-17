@@ -29,7 +29,7 @@ end
 
 ---@param ray Ray
 ---@param plane Plane
----@return boolean, RaycastResult
+---@return boolean, RaycastResult | nil
 function Worldui.Plane:planeIntersection(ray, plane)
 	local dotProduct = ray.direction:dot(plane.normal)
 
@@ -84,6 +84,7 @@ end
 ---@field shapeUuid Uuid
 ---@field host Interactable
 ---@field effects table
+---@field visualization boolean
 Worldui.Panel = class()
 
 function Worldui.Panel.new()
@@ -93,7 +94,7 @@ function Worldui.Panel.new()
 	panel.rotation = sm.quat.identity()
 	panel.color = sm.color.new(0xffffffff)
 	panel.shapeUuid = sm.uuid.new("5f41af56-df4c-4837-9b3c-10781335757f")
-	panel.visualziation = false
+	panel.visualization = false
 	panel.host = nil
     panel.effect = nil
     panel.type = "panel"
@@ -115,7 +116,7 @@ function Worldui.Panel:draw()
 	effect:setScale(self.size)
 	effect:setParameter("color", self.color)
 	effect:setParameter("uuid", self.shapeUuid)
-	effect:setParameter("visualization", self.visualziation)
+	effect:setParameter("visualization", self.visualization)
 	effect:setScale(self.size)
 
 	effect:start()
@@ -136,7 +137,7 @@ function Worldui.Panel:panelUpdateEffect()
 	self.effect:setScale(self.size)
 	self.effect:setParameter("color", self.color)
 	self.effect:setParameter("uuid", self.shapeUuid)
-	self.effect:setParameter("visualization", self.visualziation)
+	self.effect:setParameter("visualization", self.visualization)
 	self.effect:setScale(self.size)
 end
 
@@ -158,7 +159,7 @@ end
 
 ---@param origin Vec3
 ---@param direction Vec3
----@return boolean, RaycastResult
+---@return boolean, RaycastResult | nil
 function Worldui.Panel:panelIntersection(origin, direction, range)
 	range = range or 7.5
 	local Ray = Worldui.Ray.new(origin, direction)
@@ -166,7 +167,7 @@ function Worldui.Panel:panelIntersection(origin, direction, range)
 	local Plane = Worldui.Plane.new(self:panelGetWorlPos(), sm.quat.getRight(rot), sm.quat.getUp(rot))
 
 	local success, result = Worldui.Plane:planeIntersection(Ray, Plane)
-	if not success then return false, nil end
+	if not success or not result then return false, nil end
 	if result.distance > range then return false, nil end
 	if result.pointLocal.x > self.size.x / 2 or result.pointLocal.x < -self.size.x / 2 then return false, nil end
 	if result.pointLocal.y > self.size.y / 2 or result.pointLocal.y < -self.size.y / 2 then return false, nil end
@@ -178,6 +179,17 @@ function Worldui.Panel:panelIntersection(origin, direction, range)
 end
 
 ---@class Text
+---@field text string
+---@field textSize number
+---@field layer number
+---@field position Vec3
+---@field size Vec3
+---@field rotation Quat
+---@field host Interactable
+---@field wrap boolean
+---@field color Color
+---@field Effect table
+---@field type string
 Worldui.Text = class()
 function Worldui.Text.new()
 	local text = Worldui.Text()
