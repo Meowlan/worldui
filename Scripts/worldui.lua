@@ -17,13 +17,14 @@ Worldui.Plane = class()
 ---@param up Vec3
 ---@param right Vec3
 ---@return Plane
-function Worldui.Plane:new(position, up, right)
-	self.position = position
-	self.up = up
-	self.right = right
-	self.normal = right:cross(up)
+function Worldui.Plane.new(position, up, right)
+	local plane = Worldui.Plane()
+	plane.position = position
+	plane.up = up
+	plane.right = right
+	plane.normal = right:cross(up)
 
-	return self
+	return plane
 end
 
 ---@param ray Ray
@@ -67,8 +68,8 @@ Worldui.Ray = class()
 ---@param position Vec3
 ---@param direction Vec3
 ---@return Ray
-function Worldui.Ray:new(position, direction)
-    local ray = {}
+function Worldui.Ray.new(position, direction)
+	local ray = Worldui.Ray()
 	ray.position = position
 	ray.direction = direction
 
@@ -85,21 +86,22 @@ end
 ---@field effects table
 Worldui.Panel = class()
 
-function Worldui.Panel:new()
-	self.position = sm.vec3.zero()
-	self.size = sm.vec3.new(1, 1, 0.00001)
-	self.rotation = sm.quat.identity()
-	self.color = sm.color.new(0xffffffff)
-	self.shapeUuid = sm.uuid.new("5f41af56-df4c-4837-9b3c-10781335757f")
-	self.visualziation = false
-	self.host = nil
-    self.effect = nil
-    self.type = "panel"
+function Worldui.Panel.new()
+	local panel = Worldui.Panel()
+	panel.position = sm.vec3.zero()
+	panel.size = sm.vec3.new(1, 1, 0.00001)
+	panel.rotation = sm.quat.identity()
+	panel.color = sm.color.new(0xffffffff)
+	panel.shapeUuid = sm.uuid.new("5f41af56-df4c-4837-9b3c-10781335757f")
+	panel.visualziation = false
+	panel.host = nil
+    panel.effect = nil
+    panel.type = "panel"
 
-	return self
+	return panel
 end
 
-function Worldui.Panel:createEffect()
+function Worldui.Panel:draw()
 	local effect = sm.effect.createEffect("ShapeRenderable", self.host)
 
 	if sm.exists(self.host) then
@@ -159,9 +161,9 @@ end
 ---@return boolean, RaycastResult
 function Worldui.Panel:panelIntersection(origin, direction, range)
 	range = range or 7.5
-	local Ray = Worldui.Ray:new(origin, direction)
+	local Ray = Worldui.Ray.new(origin, direction)
 	local rot = self:panelGetWorlRot()
-	local Plane = Worldui.Plane:new(self:panelGetWorlPos(), sm.quat.getRight(rot), sm.quat.getUp(rot))
+	local Plane = Worldui.Plane.new(self:panelGetWorlPos(), sm.quat.getRight(rot), sm.quat.getUp(rot))
 
 	local success, result = Worldui.Plane:planeIntersection(Ray, Plane)
 	if not success then return false, nil end
@@ -177,23 +179,24 @@ end
 
 ---@class Text
 Worldui.Text = class()
-function Worldui.Text:new()
-    self.text = ""
-    self.textSize = 0.2
-    self.layer = 0.005
-    self.position = sm.vec3.zero()
-    self.size = sm.vec3.one()
-    self.rotation = sm.quat.identity()
-    self.host = nil
-    self.wrap = true
-    self.color = sm.color.new(0xffffffff)
-    self.effects = {}
-    self.type = "text"
+function Worldui.Text.new()
+	local text = Worldui.Text()
+    text.text = ""
+    text.textSize = 0.2
+    text.layer = 0.005
+    text.position = sm.vec3.zero()
+    text.size = sm.vec3.one()
+    text.rotation = sm.quat.identity()
+    text.host = nil
+    text.wrap = true
+    text.color = sm.color.new(0xffffffff)
+    text.effects = {}
+    text.type = "text"
 
-	return self
+	return text
 end
 
-function Worldui.Text:createEffects()
+function Worldui.Text:draw()
     -- TODO: a full rewrite of this function, espacially the text parsing could be made a lot faster and cleaner
 
 	local ratio = 0.5352112676056338 -- the ratio between width and height, devide the height by this to get the offset
@@ -302,7 +305,7 @@ end
 function Worldui.Text:setText(text)
     self.text = text
     self:destroy()
-    self:createEffects()
+    self:draw()
 end
 
 function Worldui.Text:destroy()

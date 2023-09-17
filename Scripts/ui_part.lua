@@ -29,19 +29,19 @@ function UiPart:client_onCreate()
 
 	--TODO: add a way to change if the panels should start at the top left corner or in the center, currently it always starts in the center
 
-	self.panels.frame = Worldui.Panel():new()
+	self.panels.frame = Worldui.Panel.new()
 	self.panels.frame.host = self.interactable
 	self.panels.frame.size = sm.vec3.new(2, 2, 0.00001)
 	self.panels.frame.position = sm.vec3.new(0, 1 + 0.125, 0)
-	self.panels.frame:createEffect()
+	self.panels.frame:draw()
 
-	self.panels.button = Worldui.Panel():new()
+	self.panels.button = Worldui.Panel.new()
 	self.panels.button.host = self.interactable
 	self.panels.button.size = sm.vec3.new(0.5, 0.5, 0.00001)
 	self.panels.button.position = sm.vec3.new(0, 0.5 + 0.125, 0.005)
 	self.panels.button.color = sm.color.new(0x00afffff)
 	self.panels.button.shapeUuid = sm.uuid.new("0cf010e1-50c5-4c98-b56b-e3c6e8c9d3b9") -- uuid for rounded_rect
-	self.panels.button:createEffect()
+	self.panels.button:draw()
 
 	self.text_frame = [[
 hello world,
@@ -58,19 +58,19 @@ eh whaterver who cares anyways
 #ff00ffxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ]]
 
-	self.panels.text_frame = Worldui.Text():new()
+	self.panels.text_frame = Worldui.Text.new()
 	self.panels.text_frame.text = self.text_frame
 	self.panels.text_frame.position = self.panels.frame.position
 	self.panels.text_frame.size = self.panels.frame.size
 	self.panels.text_frame.host = self.interactable
-	self.panels.text_frame:createEffects()
+	self.panels.text_frame:draw()
 
-	self.panels.text_button = Worldui.Text():new()
+	self.panels.text_button = Worldui.Text.new()
 	self.panels.text_button.text = "im an epic button with text on it"
 	self.panels.text_button.position = self.panels.button.position
 	self.panels.text_button.size = self.panels.button.size
 	self.panels.text_button.host = self.interactable
-	self.panels.text_button:createEffects()
+	self.panels.text_button:draw()
 
 	self.time = 0
 end
